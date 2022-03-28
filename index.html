@@ -1,0 +1,113 @@
+<html lang=en>
+<head>
+<script>
+console.log("oh wtf");
+
+class TimeSheetCell extends HTMLElement {
+
+  // A getter/setter for an open property.
+  get open() {
+    return this.hasAttribute('open');
+  }
+
+  set open(val) {
+    // Reflect the value of the open property as an HTML attribute.
+    if (val) {
+      this.setAttribute('open', '');
+    } else {
+      this.removeAttribute('open');
+    }
+    this.toggleDrawer();
+  }
+
+  // A getter/setter for a disabled property.
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val) {
+    // Reflect the value of the disabled property as an HTML attribute.
+    if (val) {
+      this.setAttribute('disabled', '');
+    } else {
+      this.removeAttribute('disabled');
+    }
+  }
+
+  // Can define constructor arguments if you wish.
+  constructor() {
+    // If you define a constructor, always call super() first!
+    // This is specific to CE and required by the spec.
+    super();
+    
+    console.log(":yey:");
+
+    this.addEventListener("keydown", (e) => {
+       if (e.keyCode == '13') {
+          console.log("oh no you di-int");
+	  this.className = "";
+	  this.className = "bloody";
+	  e.preventDefault();
+	  this.blur();
+	  return false;
+       }
+    });
+
+    // Setup a click listener on <app-drawer> itself.
+    this.addEventListener('click', e => {
+      console.log("i got the click");
+//      this.className = "foobar";
+      // Don't toggle the drawer if it's disabled.
+      if (this.disabled) {
+        return;
+      }
+      this.toggleDrawer();
+    });
+  }
+
+    connectedCallback() {
+      if (this.hasAttribute("timesheet-id")) {
+        let myid = this.getAttribute("timesheet-id");
+        console.log("my id is : " + myid);
+	this.innerHTML = `<div contenteditable=true id=$myid>a-default-value</div>`;
+      }
+    }
+
+
+  toggleDrawer() {
+     /// pass?
+  }
+}
+
+customElements.define('ts-cell', TimeSheetCell);
+</script>
+<style>
+   ts-cell {
+      margin: .5em;
+      padding: .25em;
+      display: inline-block;
+      border: 1px solid #ddd;
+      font-family: arial;
+      background-color: black;
+      color: goldenrod;
+   }
+   ts-cell.foobar {
+      background-color: white;
+      color: black;
+   }
+   ts-cell.bloody {
+     background-color: red;
+     color: white;
+   }
+</style>
+
+</head>
+
+<body>
+
+
+<ts-cell timesheet-id="42"></ts-cell>
+
+</body>
+</html>
+
