@@ -1,8 +1,17 @@
 <html lang=en>
 <head>
-<script src="https://unpkg.com/@reactivex/rxjs@v6.0.0/dist/global/rxjs.umd.js></script>
+<script src="Rx.min.js"></script>
+
+
+<script type="module">
+
+let sock = Rx.webSocket();
+
+</script>
+
 <script>
 console.log("oh wtf");
+
 
 class TimeSheetCell extends HTMLElement {
 
