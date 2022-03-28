@@ -2,27 +2,29 @@
 
 import asyncio
 import websockets
-import JSON
+import json
 from pprint import pprint
 
 async def hello(websocket, path):
     input = await websocket.recv()
     try:
         payload = JSON.loads(input)
-    catch(Exception as e):
+    except Exception as e:
         print("omgfbbqwtf??")
-        continue
+        return
     
     pprint(payload)
+    if payload["type"] == "update":
+        payload["type"] = "ack";
 
+    await websocket.send(JSON.dumps(payload))
+    print("> {}".format(payload))
 
-    greeting = { what: "i am a robot" }
-    await websocket.send(JSON.dumps(greeting))
-    print("> {}".format(greeting))
-
-start_server = websockets.serve(hello, 'localhost', 8765)
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+if __name__ == "__main__":
+    port = 8765
+    print("starting server on port {}".format(port))
+    start_server = websockets.serve(hello, 'localhost', port)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
 
 
