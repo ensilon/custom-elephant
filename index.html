@@ -49,9 +49,15 @@ class TimeSheetCell extends HTMLElement {
 	  this.className = "bloody";
 	  e.preventDefault();
 	  this.blur();
+	  setTimeout(() => {
+	     // fire our lazers!!!
+	     console.log("ONE. SECOND. LATER.");
+	     this.ack();
+	  }, 3000);
 	  return false;
        }
     });
+    
 
     // Setup a click listener on <app-drawer> itself.
     this.addEventListener('click', e => {
@@ -63,8 +69,13 @@ class TimeSheetCell extends HTMLElement {
       }
       this.toggleDrawer();
     });
-  }
+  } // constructor !!
 
+    ack() {
+       this.className = "rolling-meadows";
+        let myid = this.getAttribute("timesheet-id");
+        console.log("saved id : " + myid);
+    }
     connectedCallback() {
       if (this.hasAttribute("timesheet-id")) {
         let myid = this.getAttribute("timesheet-id");
@@ -84,12 +95,16 @@ customElements.define('ts-cell', TimeSheetCell);
 <style>
    ts-cell {
       margin: .5em;
-      padding: .25em;
       display: inline-block;
       border: 1px solid #ddd;
       font-family: arial;
       background-color: black;
       color: goldenrod;
+   }
+   ts-cell div {
+      padding: 10px;
+      max-width: 8em;
+      text-overflow: elipsis;
    }
    ts-cell.foobar {
       background-color: white;
@@ -99,6 +114,10 @@ customElements.define('ts-cell', TimeSheetCell);
      background-color: red;
      color: white;
    }
+   ts-cell.rolling-meadows {
+     background-color: #88ef99;
+     color: black;
+   }
 </style>
 
 </head>
@@ -107,6 +126,12 @@ customElements.define('ts-cell', TimeSheetCell);
 
 
 <ts-cell timesheet-id="42"></ts-cell>
+<ts-cell timesheet-id="12"></ts-cell>
+<ts-cell timesheet-id="7"></ts-cell>
+<ts-cell timesheet-id="69" nice></ts-cell>
+<ts-cell timesheet-id="420"></ts-cell>
+<ts-cell timesheet-id="9001"></ts-cell>
+<ts-cell timesheet-id="0"></ts-cell>
 
 </body>
 </html>
