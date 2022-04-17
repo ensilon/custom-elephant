@@ -35,16 +35,41 @@ class TimeSheetCell extends HTMLElement {
     
     //console.log(":yey:");
 
+	// Create a shadow root
+	this.attachShadow({mode: 'open'}); // sets and returns 'this.shadowRoot'
+
+	// Create (nested) span elements
+	const wrapper = document.createElement('div');
+	wrapper.setAttribute('contenteditable','true');
+	wrapper.innerText = "0";
+
+	// Create some CSS to apply to the shadow dom
+//	const style = document.createElement('style');
+//	style.textContent = '';
+
+    // attach the created elements to the shadow DOM
+	this.shadowRoot.append(wrapper);
+
+	// Apply external styles to the shadow dom
+	const linkElem = document.createElement('link');
+	linkElem.setAttribute('rel', 'stylesheet');
+	linkElem.setAttribute('href', 'tsc.css');
+
+	// Attach the created element to the shadow dom
+	this.shadowRoot.appendChild(linkElem);
+
+
+
     this.addEventListener("keydown", (e) => {
        if (e.keyCode == '13') {
           console.log("oh no you di-int");
-	  	  this.className = "";
-	      this.className = "bloody";
+	  	  this.shadowRoot.querySelector("div").className = "";
+	      this.shadowRoot.querySelector("div").className = "bloody";
 	      e.preventDefault();
 	      this.blur();
 	  
 	      let cell_id = this.getAttribute("timesheet-id");
-	      let contents = this.querySelector("div").innerText;
+	      let contents = this.shadowRoot.querySelector("div").innerText;
 	      console.log(contents);
 	      sock.send("cell-update", { contents: contents, id: cell_id });
 
@@ -56,16 +81,11 @@ class TimeSheetCell extends HTMLElement {
 	  	  return false;
        }
     });
-    
-
-    // Setup a click listener on <app-drawer> itself.
-    this.addEventListener('click', e => {
-      console.log("i got the click");
-    });
+  
   } // constructor !!
 
     ack() {
-       this.className = "rolling-meadows";
+       this.shadowRoot.querySelector("div").className = "rolling-meadows";
         let myid = this.getAttribute("timesheet-id");
         console.log("saved id : " + myid);
     }
@@ -73,7 +93,8 @@ class TimeSheetCell extends HTMLElement {
       if (this.hasAttribute("timesheet-id")) {
         let myid = this.getAttribute("timesheet-id");
         console.log("my id is : " + myid);
-	    this.innerHTML = `<div contenteditable=true id=$myid>0</div>`;
+		this.shadowRoot.querySelector("div").setAttribute('id', myid);
+	    //this.innerHTML = `<div contenteditable=true id=$myid>0</div>`;
 		registerWsListener(sock, myid);
       }
     }
@@ -82,48 +103,20 @@ class TimeSheetCell extends HTMLElement {
 
 customElements.define('ts-cell', TimeSheetCell);
 </script>
-<style>
-   ts-cell {
-      margin: .5em;
-      display: inline-block;
-      border: 1px solid #ddd;
-      font-family: arial;
-      background-color: black;
-      color: goldenrod;
-   }
-   ts-cell div {
-      padding: 10px;
-      max-width: 8em;
-      text-overflow: elipsis;
-   }
-   ts-cell.foobar {
-      background-color: white;
-      color: black;
-   }
-   ts-cell.bloody {
-     background-color: red;
-     color: white;
-   }
-   ts-cell.rolling-meadows {
-     background-color: #88ef99;
-     color: black;
-   }
-</style>
-
 
 </head>
 
-<body>
+  <body>
 
-<p id="tsc">unknown</p>
-<ts-cell timesheet-id="42"></ts-cell>
-<ts-cell timesheet-id="12"></ts-cell>
-<ts-cell timesheet-id="7"></ts-cell>
-<ts-cell timesheet-id="69" nice></ts-cell>
-<ts-cell timesheet-id="420"></ts-cell>
-<ts-cell timesheet-id="9001"></ts-cell>
-<ts-cell timesheet-id="0"></ts-cell>
+	<p id="tsc">unknown</p>
+	<ts-cell timesheet-id="42"></ts-cell>
+	<ts-cell timesheet-id="12"></ts-cell>
+	<ts-cell timesheet-id="7"></ts-cell>
+	<ts-cell timesheet-id="69"></ts-cell>
+	<ts-cell timesheet-id="420"></ts-cell>
+	<ts-cell timesheet-id="9001"></ts-cell>
+	<ts-cell timesheet-id="0"></ts-cell>
 
-</body>
+  </body>
 </html>
 
