@@ -1,69 +1,58 @@
+<!DOCTYPE html>
 <html lang=en>
 <head>
 
 <script type="module">
-  import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 
-var sock = io("ws://localhost:8765");
+var sock = new WebSocket("ws://localhost:8080/tsc");
+var sockStatus = document.getElementById("tsc");
+console.log(sockStatus.innerText);
+sockStatus.innerText = "setup";
+
+sock.onopen = function (event) {
+  sockStatus.innerText = "is open";
+};
+
+sock.onmessage = function (event) {
+  console.log(event.data);
+  if (true) {  
+    console.log("unknown tsc event");
+  };
+};
+
+const registerWsListener = function (tsc, tsid) {
+	
+};
 
 class TimeSheetCell extends HTMLElement {
 
-  // A getter/setter for an open property.
-  get open() {
-    return this.hasAttribute('open');
-  }
-
-  set open(val) {
-    // Reflect the value of the open property as an HTML attribute.
-    if (val) {
-      this.setAttribute('open', '');
-    } else {
-      this.removeAttribute('open');
-    }
-    this.toggleDrawer();
-  }
-
-  // A getter/setter for a disabled property.
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-
-  set disabled(val) {
-    // Reflect the value of the disabled property as an HTML attribute.
-    if (val) {
-      this.setAttribute('disabled', '');
-    } else {
-      this.removeAttribute('disabled');
-    }
-  }
-
-  // Can define constructor arguments if you wish.
+   // Can define constructor arguments if you wish.
   constructor() {
     // If you define a constructor, always call super() first!
     // This is specific to CE and required by the spec.
     super();
     
-    console.log(":yey:");
+    //console.log(":yey:");
 
     this.addEventListener("keydown", (e) => {
        if (e.keyCode == '13') {
           console.log("oh no you di-int");
-	  this.className = "";
-	  this.className = "bloody";
-	  e.preventDefault();
-	  this.blur();
+	  	  this.className = "";
+	      this.className = "bloody";
+	      e.preventDefault();
+	      this.blur();
 	  
-	  let cell_id = this.getAttribute("timesheet-id");
-	  let contents = this.querySelector("div").innerText;
-	  console.log(contents);
-	  socket.emit("cell-update", { contents: contents, id: cell_id });
+	      let cell_id = this.getAttribute("timesheet-id");
+	      let contents = this.querySelector("div").innerText;
+	      console.log(contents);
+	      //sock.send("cell-update", { contents: contents, id: cell_id });
 
-	  setTimeout(() => {
-	     // fire our lazers!!!
-	     console.log("ONE. SECOND. LATER.");
-	     this.ack();
-	  }, 3000);
-	  return false;
+	      setTimeout(() => {
+	         // fire our lazers!!!
+	         console.log("ONE. SECOND. LATER.");
+	     	this.ack();
+	  	  }, 3000);
+	  	  return false;
        }
     });
     
@@ -71,12 +60,6 @@ class TimeSheetCell extends HTMLElement {
     // Setup a click listener on <app-drawer> itself.
     this.addEventListener('click', e => {
       console.log("i got the click");
-//      this.className = "foobar";
-      // Don't toggle the drawer if it's disabled.
-      if (this.disabled) {
-        return;
-      }
-      this.toggleDrawer();
     });
   } // constructor !!
 
@@ -89,14 +72,11 @@ class TimeSheetCell extends HTMLElement {
       if (this.hasAttribute("timesheet-id")) {
         let myid = this.getAttribute("timesheet-id");
         console.log("my id is : " + myid);
-	this.innerHTML = `<div contenteditable=true id=$myid>a-default-value</div>`;
+	    this.innerHTML = `<div contenteditable=true id=$myid>0</div>`;
+		registerWsListener(sock, myid);
       }
     }
 
-
-  toggleDrawer() {
-     /// pass?
-  }
 }
 
 customElements.define('ts-cell', TimeSheetCell);
@@ -133,7 +113,7 @@ customElements.define('ts-cell', TimeSheetCell);
 
 <body>
 
-
+<p id="tsc">unknown</p>
 <ts-cell timesheet-id="42"></ts-cell>
 <ts-cell timesheet-id="12"></ts-cell>
 <ts-cell timesheet-id="7"></ts-cell>
