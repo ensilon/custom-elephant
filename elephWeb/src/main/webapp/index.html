@@ -4,7 +4,7 @@
 
 <script type="module">
 
-var sock = new WebSocket("ws://localhost:8080/tsc");
+var sock = new WebSocket("ws://localhost:8080/elephWeb/Tsc");
 var sockStatus = document.getElementById("tsc");
 console.log(sockStatus.innerText);
 sockStatus.innerText = "setup";
@@ -45,7 +45,7 @@ class TimeSheetCell extends HTMLElement {
 	      let cell_id = this.getAttribute("timesheet-id");
 	      let contents = this.querySelector("div").innerText;
 	      console.log(contents);
-	      //sock.send("cell-update", { contents: contents, id: cell_id });
+	      sock.send("cell-update", { contents: contents, id: cell_id });
 
 	      setTimeout(() => {
 	         // fire our lazers!!!
