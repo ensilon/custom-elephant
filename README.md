@@ -11,7 +11,8 @@ steps:
 -unzip Wildfly, add to Eclipse workspace config
 -git checkout
 -import projects
+-set jre to OpenJDK 11 for workspace, wildfly
 -Project Explorer - right-click elephant-ear - Run As - Server
 -Server perspective, elephant-ear - Full publish
 -test in browser http://localhost:8080/elephWeb
--more
+
