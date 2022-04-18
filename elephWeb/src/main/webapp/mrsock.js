@@ -4,7 +4,7 @@
 export class mrSock {
 	
 	sock;
-	static handlers=[];
+	handlers=[];
 	static urls=[]; // connection cache
 	
   	constructor (url) {
@@ -25,16 +25,16 @@ export class mrSock {
 			sockStatus.innerText = "is open";
   		}
 
-  		this.sock.onmessage = function(event) {
+  		const cb = function(event) {
 			console.log(event.data);
 			const jsondata = JSON.parse(event.data);
 			switch(jsondata.type) {
 			  case "cell-update":
 			    //console.log(mrSock.handlers.toString());
-				for (let handler of mrSock.handlers) {
+				for (let handler of this.handlers) {
 					//console.log("trying handler id: " + handler.ep + " json.id" + jsondata.id);
 					if (handler.ep == jsondata.id) {
-						handler.cb.ack();
+						handler.cb();
 						break;
 					}
 				}
@@ -43,6 +43,8 @@ export class mrSock {
 					console.log("unknown tsc event type " + jsondata.id);
 			}
   		}
+
+  		this.sock.onmessage = cb.bind(this);
  	}
  	
   	send(jsn) {
@@ -50,7 +52,7 @@ export class mrSock {
 	}
 
   	registerWsListener (tsid, cb_func) {
-		mrSock.handlers.push({ep: tsid, cb: cb_func});	
+		this.handlers.push({ep: tsid, cb: cb_func});	
   	}
  
 };

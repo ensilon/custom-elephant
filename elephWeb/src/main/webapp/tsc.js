@@ -37,7 +37,7 @@ export class TimeSheetCell extends HTMLElement {
  
     this.addEventListener("keydown", (e) => {
        if (e.keyCode == '13') {
-          console.log("oh no you di-int");
+          //console.log("oh no you di-int");
 	  	  this.shadowRoot.querySelector("div").className = "";
 	      this.shadowRoot.querySelector("div").className = "bloody";
 	      e.preventDefault();
@@ -45,7 +45,7 @@ export class TimeSheetCell extends HTMLElement {
 	  
 	      let cell_id = this.getAttribute("timesheet-id");
 	      let contents = this.shadowRoot.querySelector("div").innerText;
-	      console.log(contents);
+	      // console.log(contents);
 	      this.sock.send({ type:"cell-update", id: cell_id, contents: contents });
 
 	   //   setTimeout(() => {
@@ -67,10 +67,12 @@ export class TimeSheetCell extends HTMLElement {
     connectedCallback() {
       if (this.hasAttribute("timesheet-id")) {
         let myid = this.getAttribute("timesheet-id");
-        console.log("my id is : " + myid);
+        // console.log("my id is : " + myid);
 		this.shadowRoot.querySelector("div").setAttribute('id', myid);
 	    //this.innerHTML = `<div contenteditable=true id=$myid>0</div>`;
-		this.sock.registerWsListener(myid, this);
+		this.sock.registerWsListener(myid, this.ack.bind(this));
+		// get saved value from backend database
+		//this.sock.send({ type:"cell-init", id: cell_id,});
       }
     }
 
