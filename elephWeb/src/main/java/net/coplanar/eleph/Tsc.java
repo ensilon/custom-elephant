@@ -16,7 +16,7 @@ public class Tsc  {
     @OnMessage
     public String sayHello(String name) {
         System.out.println("Say hello to '" + name + "'");
-        return ("Hello" + name);
+        return (name);
     }
 
     @OnOpen
