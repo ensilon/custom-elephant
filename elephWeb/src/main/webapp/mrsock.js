@@ -5,6 +5,7 @@ export class mrSock {
 	
 	sock;
 	handlers=[];
+	gotcells_cb;
 	static urls=[]; // connection cache
 	
   	constructor (url) {
@@ -14,6 +15,7 @@ export class mrSock {
 			}
 		}
 		this.sock = new WebSocket(url);
+		console.log(url);
 		mrSock.urls.push({ my_url: url, myself: this });
 
 		const sockStatus = document.getElementById("tsc");
@@ -21,8 +23,14 @@ export class mrSock {
 		sockStatus.innerText = "setup";
   
 
-  		this.sock.onopen = function(event) {
+  		 const ono = function(event) {
 			sockStatus.innerText = "is open";
+			this.send({ type:"cell-list" });
+  		}
+		this.sock.onopen = ono.bind(this);
+
+  		this.sock.onclose = function(event) {
+			sockStatus.innerText = "is closed";
   		}
 
   		const cb = function(event) {
@@ -39,6 +47,9 @@ export class mrSock {
 					}
 				}
 				break;
+			  case "cell-list":
+			    this.gotcells_cb();
+			  break;
 			  default:
 					console.log("unknown tsc event type " + jsondata.toString());
 			}
@@ -54,5 +65,9 @@ export class mrSock {
   	registerWsListener (tsid, cb_func) {
 		this.handlers.push({ep: tsid, cb: cb_func});	
   	}
+  	
+  	registerGotcells(cb) {
+		this.gotcells_cb = cb;
+	}
  
 };
