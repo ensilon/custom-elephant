@@ -11,7 +11,7 @@ const cellsock = new mrSock("ws://" + location.host + "/elephWeb/Tsc");
 // onmessage callback
 function gotcells(payload) {
 	
-  console.log(payload);
+  //console.log(payload);
 
 	let cellElem = document.createElement('ts-cell');
 	cellElem.setAttribute('timesheet-id', payload.cellid);

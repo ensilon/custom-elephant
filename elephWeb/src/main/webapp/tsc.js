@@ -49,7 +49,7 @@ export class TimeSheetCell extends HTMLElement {
 	      e.preventDefault();
 	      this.blur();
 	  
-	      let cell_id = this.getAttribute("timesheet-id");
+	      let cell_id = Number(this.getAttribute("timesheet-id"));
 	      let contents = this.shadowRoot.querySelector("div").innerText;
 	      // console.log(contents);
 	      this.sock.send({ type:"cell-update", payload: {id: cell_id, contents: contents }});

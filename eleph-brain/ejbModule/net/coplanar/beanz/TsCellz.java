@@ -24,4 +24,17 @@ public class TsCellz {
             "SELECT tsc FROM TsCell tsc ORDER BY tsc.id", TsCell.class);
         return query.getResultList();
     }
+    public TsCell getTsCell(int id ) {
+    	TypedQuery<TsCell> query = em.createQuery(
+                "SELECT tsc FROM TsCell tsc WHERE id = :id", TsCell.class);
+    	query.setParameter("id", id);
+
+    	List<TsCell> resultList = query.getResultList();
+
+        if (resultList.isEmpty() || resultList.size() == 0) {
+            return null;
+        } else {
+            return resultList.get(0);
+        }
+    }
 }

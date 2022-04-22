@@ -13,6 +13,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
   @Override
   public Message decode(String jsonMessage) throws DecodeException {
 
+	System.out.println(jsonMessage);
     JsonObject jsonObject = Json
         .createReader(new StringReader(jsonMessage)).readObject();
     Message message = new Message();

@@ -39,7 +39,7 @@ public class Tsc  {
     		this.cellList(session);
     		break;
     	case "cell-update":
-    		this.cellUpdate(message.getPayload());
+    		this.cellUpdate(session, message.getPayload());
     		break;
     	default:
     		System.out.println("dispatch: unknown message type");
@@ -67,8 +67,21 @@ public class Tsc  {
     	System.out.println("cell list:" + sb.toString());
     }
     
-    private void cellUpdate(JsonObject obj) {
+    private void cellUpdate(Session session, JsonObject obj) throws IOException, EncodeException {
+    	Message response = new Message();
+    	response.setType("cell-update");
+ 
+    	int id = obj.getInt("id");
+    	TsCell mytscell = tscell.getTsCell(id);
+    	//float myentry = mytscell.getEntry();
     	
+    	JsonObjectBuilder builder = Json.createObjectBuilder();
+    	builder.add("id", mytscell.getId());
+    	builder.add("contents", mytscell.getEntry());
+    	JsonObject cellJson = builder.build();
+    	response.setPayload(cellJson);
+    	
+    	session.getBasicRemote().sendObject(response);
     }
     
     @OnOpen
