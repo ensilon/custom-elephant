@@ -20,4 +20,4 @@ function gotcells() {
   }
 }
 //gotcells();
-cellsock.registerGotcells(gotcells);
+cellsock.registerCallback("cell-list", gotcells);

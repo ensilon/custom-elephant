@@ -2,6 +2,8 @@ import { mrSock } from './mrsock.js'
 
 export class TimeSheetCell extends HTMLElement {
 
+  static handlers=[];
+
    // Can define constructor arguments if you wish.
   constructor() {
     // If you define a constructor, always call super() first!
@@ -9,7 +11,7 @@ export class TimeSheetCell extends HTMLElement {
     super();
     
     //console.log(":yey:");
-	this.sock = new mrSock("ws://" + location.host + "/elephWeb/Tsc"); // need singleton
+	this.sock = new mrSock("ws://" + location.host + "/elephWeb/Tsc"); // need singleton - try class static fn()?
 
 	// Create a shadow root
 	this.attachShadow({mode: 'open'}); // sets and returns 'this.shadowRoot'
@@ -46,37 +48,44 @@ export class TimeSheetCell extends HTMLElement {
 	      let cell_id = this.getAttribute("timesheet-id");
 	      let contents = this.shadowRoot.querySelector("div").innerText;
 	      // console.log(contents);
-	      this.sock.send({ type:"cell-update", id: cell_id, contents: contents });
+	      this.sock.send({ type:"cell-update", payload: {id: cell_id, contents: contents }});
 
-	   //   setTimeout(() => {
-	         // fire our lazers!!!
-	  //       console.log("ONE. SECOND. LATER.");
-	  //   	this.ack();
-	 // 	  }, 3000);
 	  	  return false;
        }
     });
   
   } // constructor !!
 
-    ack() {
+    ack(payload) { // payload not used - maybe "cell-init" will use?
        this.shadowRoot.querySelector("div").className = "rolling-meadows";
-        let myid = this.getAttribute("timesheet-id");
-        console.log("saved id : " + myid);
+        const myid = this.getAttribute("timesheet-id");
+        console.log("cell-update:: " + myid + " " + JSON.stringify(payload));
     }
+    
+    mymessage(payload) {
+		for (let handler of TimeSheetCell.handlers) {
+					//console.log("trying handler id: " + handler.ep + " json.id" + jsondata.payload.id);
+					if (handler.ep == payload.id) {
+						handler.cb(payload);
+						break; // maybe we want more than one callback?
+					}
+		}
+	}
+	
     connectedCallback() {
       if (this.hasAttribute("timesheet-id")) {
-        let myid = this.getAttribute("timesheet-id");
+        const myid = this.getAttribute("timesheet-id");
         // console.log("my id is : " + myid);
-		this.shadowRoot.querySelector("div").setAttribute('id', myid);
-	    //this.innerHTML = `<div contenteditable=true id=$myid>0</div>`;
-		this.sock.registerWsListener(myid, this.ack.bind(this));
+		this.shadowRoot.querySelector("div").setAttribute('id', myid); // maybe some kind of introspection instead?
+	    TimeSheetCell.handlers.push({ep: myid, cb: this.ack.bind(this)});
+		this.sock.registerCallback("cell-update", this.mymessage.bind(this)); // duplicates every one XXX
 		// get saved value from backend database
-		//this.sock.send({ type:"cell-init", id: cell_id,});
-      }
+		//this.sock.send({ "cell-init", { id: cell_id});
+      } else {
+		console.log("error: ts-cell: attribute timesheet-id is required when element is attached to DOM");
+	  }
     }
-
-}
-   
+ 
+ }
 
 customElements.define('ts-cell', TimeSheetCell);
