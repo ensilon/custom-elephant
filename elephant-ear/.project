@@ -5,7 +5,6 @@
 	<projects>
 		<project>elephWeb</project>
 		<project>eleph-brain</project>
-		<project>eleph-brainClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
