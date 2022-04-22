@@ -40,7 +40,7 @@ export class mrSock {
 				}
 				break;
 			  default:
-					console.log("unknown tsc event type " + jsondata.id);
+					console.log("unknown tsc event type " + jsondata.toString());
 			}
   		}
 
