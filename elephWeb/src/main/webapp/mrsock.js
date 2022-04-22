@@ -23,7 +23,7 @@ export class mrSock {
 		mrSock.urls.push({ my_url: url, myself: this });
 
 		const sockStatus = document.getElementById("tsc"); // is there a way to pass this, maybe class factory?
-		// skip if not present in DOM
+		// XXX skip if not present in DOM
 		this.statusElement = document.createElement('p')
 		//console.log(sockStatus.innerText);
 		this.statusElement.innerText = url + " setup";
@@ -32,7 +32,7 @@ export class mrSock {
 
   		const ono = function(event) {
 			this.statusElement.innerText = this.url + " open";
-			this.send({type: "cell-list"}); // hack until main.js onopen cb in place
+			this.send({type: "cell-list", payload: { dummy: "is dumb"} }); // hack until main.js onopen cb in place
   		}
 		this.sock.onopen = ono.bind(this);
 
@@ -61,7 +61,7 @@ export class mrSock {
   		this.sock.onmessage = cb.bind(this);
  	} // constructor
  	
-  	send(jsn) { // better ensapsulation if send(type, payload)
+  	send(jsn) { // better ensapsulation if we do: send(type, payload)
 		this.sock.send(JSON.stringify(jsn));
 	}
 

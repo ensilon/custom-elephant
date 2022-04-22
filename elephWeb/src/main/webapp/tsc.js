@@ -3,6 +3,10 @@ import { mrSock } from './mrsock.js'
 export class TimeSheetCell extends HTMLElement {
 
   static handlers=[];
+  
+  static() {
+	// new mrSock here?
+  }
 
    // Can define constructor arguments if you wish.
   constructor() {
@@ -62,7 +66,7 @@ export class TimeSheetCell extends HTMLElement {
         console.log("cell-update:: " + myid + " " + JSON.stringify(payload));
     }
     
-    mymessage(payload) {
+    mymessage(payload) { // can javascript have static methods?
 		for (let handler of TimeSheetCell.handlers) {
 					//console.log("trying handler id: " + handler.ep + " json.id" + jsondata.payload.id);
 					if (handler.ep == payload.id) {

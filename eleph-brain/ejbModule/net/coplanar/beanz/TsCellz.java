@@ -1,7 +1,7 @@
 package net.coplanar.beanz;
 
 import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
+//import javax.ejb.LocalBean;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
