@@ -61,9 +61,14 @@ export class TimeSheetCell extends HTMLElement {
   } // constructor !!
 
     ack(payload) { // payload not used - maybe "cell-init" will use?
+      console.log("cell-update:: " + JSON.stringify(payload));
+      if (payload.ack == true) { 
        this.shadowRoot.querySelector("div").className = "rolling-meadows";
         const myid = this.getAttribute("timesheet-id");
-        console.log("cell-update:: " + myid + " " + JSON.stringify(payload));
+      }
+      if (payload.contents) {
+		this.shadowRoot.querySelector("div").innerText = payload.contents;
+	  }
     }
     
     mymessage(payload) { // can javascript have static methods?
@@ -78,13 +83,13 @@ export class TimeSheetCell extends HTMLElement {
 	
     connectedCallback() {
       if (this.hasAttribute("timesheet-id")) {
-        const myid = this.getAttribute("timesheet-id");
+        const myid = Number(this.getAttribute("timesheet-id"));
         // console.log("my id is : " + myid);
 		this.shadowRoot.querySelector("div").setAttribute('id', myid); // maybe some kind of introspection instead?
 	    TimeSheetCell.handlers.push({ep: myid, cb: this.ack.bind(this)});
 		this.sock.registerCallback("cell-update", this.mymessage.bind(this)); // duplicates every one XXX
 		// get saved value from backend database
-		//this.sock.send({ "cell-init", { id: cell_id});
+		this.sock.send({ type:"cell-update", payload: {id: myid}});
       } else {
 		console.log("error: ts-cell: attribute timesheet-id is required when element is attached to DOM");
 	  }

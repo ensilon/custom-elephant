@@ -70,14 +70,20 @@ public class Tsc  {
     private void cellUpdate(Session session, JsonObject obj) throws IOException, EncodeException {
     	Message response = new Message();
     	response.setType("cell-update");
- 
+
     	int id = obj.getInt("id");
+    	//Integer gotContents = obj.getInt("contents");
+    	
     	TsCell mytscell = tscell.getTsCell(id);
     	//float myentry = mytscell.getEntry();
     	
     	JsonObjectBuilder builder = Json.createObjectBuilder();
     	builder.add("id", mytscell.getId());
-    	builder.add("contents", mytscell.getEntry());
+    	if ( obj.containsKey("contents") ) {
+    		builder.add("ack", true);
+    	} else {
+    		builder.add("contents", mytscell.getEntry());
+    	}
     	JsonObject cellJson = builder.build();
     	response.setPayload(cellJson);
     	
