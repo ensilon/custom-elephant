@@ -72,15 +72,16 @@ public class Tsc  {
     	response.setType("cell-update");
 
     	int id = obj.getInt("id");
-    	//Integer gotContents = obj.getInt("contents");
     	
     	TsCell mytscell = tscell.getTsCell(id);
-    	//float myentry = mytscell.getEntry();
     	
     	JsonObjectBuilder builder = Json.createObjectBuilder();
     	builder.add("id", mytscell.getId());
     	if ( obj.containsKey("contents") ) {
     		builder.add("ack", true);
+    		tscell.updateTsCellEntry(id, Float.parseFloat(obj.getString("contents")));
+    		System.out.println("contents: " + Float.parseFloat(obj.getString("contents")));
+    		tscell.flush();
     	} else {
     		builder.add("contents", mytscell.getEntry());
     	}

@@ -1,6 +1,6 @@
 package net.coplanar.beanz;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 //import javax.ejb.LocalBean;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import net.coplanar.ents.TsCell;
 
-@Stateless
+@Stateful
 public class TsCellz {
     // Injected database connection:
     @PersistenceContext private EntityManager em;
@@ -16,6 +16,9 @@ public class TsCellz {
     // Stores a new guest:
     public void persist(TsCell tscell) {
         em.persist(tscell);
+    }
+    public void flush() {
+    	em.flush();
     }
 
     // Retrieves all the guests:
@@ -25,16 +28,14 @@ public class TsCellz {
         return query.getResultList();
     }
     public TsCell getTsCell(int id ) {
-    	TypedQuery<TsCell> query = em.createQuery(
-                "SELECT tsc FROM TsCell tsc WHERE id = :id", TsCell.class);
-    	query.setParameter("id", id);
-
-    	List<TsCell> resultList = query.getResultList();
-
-        if (resultList.isEmpty() || resultList.size() == 0) {
-            return null;
-        } else {
-            return resultList.get(0);
-        }
+    	TsCell thecell = em.find(TsCell.class, id);
+    	return thecell;
+    }
+    public void updateTsCellEntry (int id, float entry) {
+    	//em.getTransaction().begin();  // can't while using container managed transations
+    	TsCell mytscell = getTsCell(id);
+    	mytscell.setEntry(entry);
+    	//em.getTransaction().begin();
+    	
     }
 }
